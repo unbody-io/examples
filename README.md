@@ -1,76 +1,45 @@
 # Unbody Demo - Parcel.js
 
-A minimal demo showcasing Unbody's semantic search capabilities using Parcel.js and TypeScript.
+Simple demo showcasing Unbody's search and RAG capabilities.
 
 ## Features
 
-- Semantic search across multiple content types:
-  - Markdown documents
-  - Images with captions
-  - Text blocks
-- Three search modes:
-  - Semantic search (meaning-based)
-  - Keyword search (exact matches)
-  - Hybrid search (combination of both)
-- Minimal, clean UI
-- TypeScript support
+- **Search**: Semantic, keyword, and hybrid search across markdown docs, images, and text blocks
+- **RAG**: Generate summaries and answers from your content
 
-## Setup
+## Quick Start
+Make sure your unbdoy server is running and the data is indexed.
 
-1. Install dependencies:
 ```bash
 npm install
-```
-
-2. Configure Unbody:
-   - Create an account at [Unbody.io](https://unbody.io)
-   - Create a new project
-   - Get your API key and project ID
-   - Update `src/search/app.ts` with your credentials:
-```typescript
-const unbody = new Unbody({
-    apiKey: "your-api-key",
-    projectId: "your-project-id",
-    baseUrl: "http://localhost:3000/content" // or your Unbody instance URL
-});
-```
-
-3. Start the development server:
-```bash
 npm start
 ```
 
-4. Build for production:
-```bash
-npm run build
+## Examples
+
+### Search
+```typescript
+// Semantic search with 0.65 certainty
+const results = await unbody.get.textDocument
+  .search.about(query)
+  .select("title", "autoSummary")
+  .limit(3)
+  .exec();
 ```
 
-## Project Structure
-
+### RAG
+```typescript
+// Generate content from your docs
+const answer = await unbody.get.textDocument
+  .search.about(query)
+  .select("text", "title")
+  .generate.fromMany(
+    "Explain these documents",
+    ["text"]
+  )
+  .exec();
 ```
-src/
-├── index.html          # Main entry point
-├── search/            # Search feature
-│   ├── index.html     # Search page
-│   └── app.ts         # Search logic
-└── rag/              # RAG feature
-    ├── index.html     # RAG page
-    └── app.ts         # RAG logic
-```
 
-## Search Types
+## Tech
 
-1. **Semantic Search**: Finds content based on meaning rather than exact matches
-2. **Keyword Search**: Traditional exact text matching
-3. **Hybrid Search**: Combines both semantic and keyword approaches
-
-## Technologies Used
-
-- [Parcel](https://parceljs.org/) - Zero-config bundler
-- [TypeScript](https://www.typescriptlang.org/) - Type safety
-- [Unbody](https://unbody.io) - Semantic search and content management
-- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS
-
-## License
-
-MIT 
+Parcel.js • TypeScript • Tailwind CSS • [Unbody](https://unbody.io) 
