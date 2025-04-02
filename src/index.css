@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-gray-900 bg-white font-mono;
+    @apply p-6;
+  }
+  
+  a {
+    @apply text-blue-600 hover:text-blue-800 underline;
+  }
+  
+  ul {
+    @apply list-disc list-inside;
+  }
+  
+  li {
+    @apply my-1;
+  }
+}

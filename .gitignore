@@ -1,0 +1,14 @@
+.idea
+.DS_Store
+
+.parcel-cache
+dist
+node_modules
+
+# Yarn
+yarn-error.log
+yarn.lock
+
+.env.*
+
+.DS_Store

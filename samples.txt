@@ -1,0 +1,125 @@
+generate on text blocks',
+generate on markdown files',
+generate on top result of google docs search',
+search for similar images',
+get related articles',
+generate on subtitle of a video',
+generate on subtitle of an audio',
+what are the highlights about privacy in this video? (generative)',
+
+
+```
+[
+    [
+      'generate on text blocks',
+      client.get.textBlock.search
+        .about('privacy')
+        .generate(
+          'groupedResult',
+          'how do these text blocks relate to each other?',
+        )
+        .getGraphQuery(),
+    ],
+    [
+      'generate on markdown files',
+      client.get.textDocument
+        .where({
+          mimeType: 'text/markdown',
+        })
+        .limit(1)
+        .generate('singleResult', 'Summarize this document')
+        .getGraphQuery(),
+    ],
+    [
+      'generate on top result of google docs search',
+      client.get.googleDoc.search
+        .about('privacy')
+        .generate('singleResult', 'Summarize this document')
+        .getGraphQuery(),
+    ],
+    [
+      'search for similar images',
+      client.get.imageBlock.similar.image(IMAGE_1).getGraphQuery(),
+    ],
+    [
+      'get related articles',
+      client.get.googleDoc.similar
+        .record('05bb5dc3-251f-5739-a63f-140a4908ba9d')
+        .select('title', 'text')
+        .where(({ NotEqual }) => ({
+          id: NotEqual('05bb5dc3-251f-5739-a63f-140a4908ba9d'),
+        }))
+        .getGraphQuery(),
+    ],
+    [
+      'generate on subtitle of a video',
+      client.get.subtitleEntry
+        .where(({ GreaterThan, And }) =>
+          And({
+            document: {
+              SubtitleFile: {
+                media: {
+                  VideoFile: {
+                    remoteId: '1Jb48mHLzeA_lv2IjKMyWTk1KoNhl4fFc',
+                  },
+                },
+              },
+            },
+          }),
+        )
+        .generate(
+          'groupedResult',
+          'Describe this video based on its transcription',
+          ['text'],
+        )
+        .getGraphQuery(),
+    ],
+    [
+      'generate on subtitle of an audio',
+      client.get.subtitleEntry
+        .where(({ GreaterThan, And }) =>
+          And({
+            document: {
+              SubtitleFile: {
+                media: {
+                  AudioFile: {
+                    remoteId: '1P6ldTUVXDN_Rkw08IoGP1nnuRkOovTAZ',
+                  },
+                },
+              },
+            },
+          }),
+        )
+        .sort('order', 'desc')
+        .generate(
+          'groupedResult',
+          "What's narrator's name and what's the topic of this audio?",
+          ['text', 'start', 'end'],
+        )
+        .getGraphQuery(),
+    ],
+    [
+      'what are the highlights about privacy in this video? (generative)',
+      client.get.subtitleEntry
+        .where(({ GreaterThan, And }) =>
+          And({
+            document: {
+              SubtitleFile: {
+                media: {
+                  VideoFile: {
+                    remoteId: '1Jb48mHLzeA_lv2IjKMyWTk1KoNhl4fFc',
+                  },
+                },
+              },
+            },
+          }),
+        )
+        .search.about('privacy')
+        .generate(
+          'groupedResult',
+          'What are the highlights about privacy in this video?',
+        )
+        .getGraphQuery(),
+    ],
+  ]
+```
