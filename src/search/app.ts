@@ -15,7 +15,8 @@ type SearchResult = {
 const semanticSearch = async (query: string): Promise<SearchResult> => {
 
     console.log("semantic search: ", query);
-    const { data: { payload: markdowns } } = 
+    
+    const { data: { payload: markdowns } } =
         await unbody.get.textDocument
             .where({
                 mimeType: "text/markdown"
@@ -26,18 +27,20 @@ const semanticSearch = async (query: string): Promise<SearchResult> => {
             .exec();
 
 
-    const { data: { payload: images } } = 
+    // Uncomment if the Image Vectorizer is enabled
+    /*
+    const { data: { payload: images } } =
         await unbody.get.imageBlock
             .where(({IsNull}) => ({
                 remoteId: IsNull(false)
-            }))   
+            }))
             .select("url", "originalName", "autoCaption")
             .search.about(query, {certainty: 0.65})
             .limit(3)
             .exec();
+    */
 
-    
-    const { data: { payload: textBlocks } } = 
+    const { data: { payload: textBlocks } } =
         await unbody.get.textBlock
             .select("text", "document.TextDocument.title", "document.TextDocument.originalName")
             .search.about(query, {certainty: 0.65})
@@ -46,14 +49,14 @@ const semanticSearch = async (query: string): Promise<SearchResult> => {
 
     return {
         markdowns: markdowns as ITextDocument[],
-        images: images as IImageBlock[],
+        images: [],
         textBlocks: textBlocks as ITextBlock[]
     }
 }
 
 const keywordSearch = async (query: string) => {
 
-    const { data: { payload: markdowns } } = 
+    const { data: { payload: markdowns } } =
         await unbody.get.textDocument
             .where({
                 mimeType: "text/markdown"
@@ -63,7 +66,9 @@ const keywordSearch = async (query: string) => {
             .limit(3)
             .exec();
 
-    const { data: { payload: images } } = 
+    // Uncomment if the Image Vectorizer is enabled
+    /*
+    const { data: { payload: images } } =
         await unbody.get.imageBlock
             .where(({IsNull}) => ({
                 remoteId: IsNull(false)
@@ -72,8 +77,9 @@ const keywordSearch = async (query: string) => {
             .search.find(query)
             .limit(3)
             .exec();
+    */
 
-    const { data: { payload: textBlocks } } = 
+    const { data: { payload: textBlocks } } =
         await unbody.get.textBlock
             .select("text", "document.TextDocument.title", "document.TextDocument.originalName")
             .search.find(query)
@@ -82,33 +88,36 @@ const keywordSearch = async (query: string) => {
 
     return {
         markdowns: markdowns as ITextDocument[],
-        images: images as IImageBlock[],
+        images: [],
         textBlocks: textBlocks as ITextBlock[]
     }
 }
 
 const hybridSearch = async (query: string): Promise<SearchResult> => {
-    const { data: { payload: markdowns } } = 
+    const { data: { payload: markdowns } } =
         await unbody.get.textDocument
             .where({
                 mimeType: "text/markdown"
             })
             .select("title", "originalName", "autoSummary")
-            .search.hybrid(query) 
+            .search.hybrid(query)
             .limit(3)
             .exec();
 
-    const { data: { payload: images } } = 
+    // Uncomment if the Image Vectorizer is enabled
+    /*
+    const { data: { payload: images } } =
         await unbody.get.imageBlock
             .where(({IsNull}) => ({
                 remoteId: IsNull(false)
             }))
             .select("url", "originalName", "autoCaption")
-            .search.hybrid(query) 
+            .search.hybrid(query)
             .limit(3)
             .exec();
+    */
 
-    const { data: { payload: textBlocks } } = 
+    const { data: { payload: textBlocks } } =
         await unbody.get.textBlock
             .select("text", "document.TextDocument.title", "document.TextDocument.originalName")
             .search.hybrid(query)
@@ -117,7 +126,7 @@ const hybridSearch = async (query: string): Promise<SearchResult> => {
 
     return {
         markdowns: markdowns as ITextDocument[],
-        images: images as IImageBlock[],
+        images: [],
         textBlocks: textBlocks as ITextBlock[]
     }
 }
